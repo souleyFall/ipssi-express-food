@@ -1,0 +1,26 @@
+{
+  "name": "ipssi-express-food",
+  "private": true,
+  "description": "IPSSI Express Food — livraison de plats du jour à vélo en moins de 20 minutes",
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "engines": {
+    "node": ">=20.11"
+  },
+  "scripts": {
+    "dev": "concurrently -n api,web -c yellow,cyan \"npm:dev:server\" \"npm:dev:client\"",
+    "dev:server": "npm run dev --workspace server",
+    "dev:client": "npm run dev --workspace client",
+    "build": "npm run build --workspace server && npm run build --workspace client",
+    "start": "npm run start --workspace server",
+    "test": "npm run test --workspace server && npm run test --workspace client",
+    "typecheck": "npm run typecheck --workspace server && npm run typecheck --workspace client",
+    "db:push": "npm run db:push --workspace server",
+    "db:seed": "npm run db:seed --workspace server"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.5"
+  }
+}

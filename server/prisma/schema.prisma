@@ -1,0 +1,143 @@
+// Modèle de données IPSSI Express Food (MongoDB Atlas via Prisma).
+// Une collection par entité demandée dans le cahier des charges :
+// clients, plats (du jour), livreurs, commandes. Les montants sont en centimes.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Client {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  email          String   @unique
+  passwordHash   String
+  firstName      String
+  lastName       String
+  phone          String?
+  address        String?
+  addressDetails String?
+  // RGPD : preuve du consentement aux CGU / politique de confidentialité
+  cguAcceptedAt  DateTime
+  // RGPD : consentement explicite et facultatif aux emails (désactivé par défaut)
+  marketingOptIn Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  orders         Order[]
+
+  @@map("clients")
+}
+
+model Admin {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  email        String   @unique
+  passwordHash String
+  firstName    String
+  createdAt    DateTime @default(now())
+
+  @@map("admins")
+}
+
+enum CourierStatus {
+  LIBRE
+  EN_LIVRAISON
+  INDISPONIBLE
+}
+
+type GeoPoint {
+  lat Float
+  lng Float
+}
+
+model Courier {
+  id                String        @id @default(auto()) @map("_id") @db.ObjectId
+  email             String        @unique
+  passwordHash      String
+  firstName         String
+  lastName          String
+  phone             String?
+  status            CourierStatus @default(INDISPONIBLE)
+  // Seule la dernière position connue est conservée (pas d'historique de trajets).
+  position          GeoPoint?
+  positionUpdatedAt DateTime?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  orders            Order[]
+
+  @@index([status])
+  @@map("livreurs")
+}
+
+enum DishType {
+  PLAT
+  DESSERT
+}
+
+model Dish {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String
+  priceCents  Int
+  type        DishType
+  // Jour du menu au format AAAA-MM-JJ (fuseau Europe/Paris)
+  menuDate    String
+  allergens   String[]
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([menuDate, type])
+  @@map("plats")
+}
+
+enum OrderStatus {
+  EN_ATTENTE
+  ASSIGNEE
+  EN_LIVRAISON
+  LIVREE
+}
+
+enum PaymentMethod {
+  CARTE_A_LA_LIVRAISON
+  ESPECES_A_LA_LIVRAISON
+}
+
+// Copie figée du plat au moment de la commande (le menu change chaque jour).
+type OrderItem {
+  dishId         String   @db.ObjectId
+  name           String
+  type           DishType
+  unitPriceCents Int
+  quantity       Int
+}
+
+model Order {
+  id                  String        @id @default(auto()) @map("_id") @db.ObjectId
+  number              Int           @unique
+  clientId            String?       @db.ObjectId
+  client              Client?       @relation(fields: [clientId], references: [id])
+  items               OrderItem[]
+  subtotalCents       Int
+  deliveryFeeCents    Int
+  totalCents          Int
+  deliveryAddress     String
+  deliveryDetails     String?
+  contactPhone        String
+  paymentMethod       PaymentMethod
+  status              OrderStatus   @default(EN_ATTENTE)
+  courierId           String?       @db.ObjectId
+  courier             Courier?      @relation(fields: [courierId], references: [id])
+  estimatedDeliveryAt DateTime?
+  createdAt           DateTime      @default(now())
+  assignedAt          DateTime?
+  pickedUpAt          DateTime?
+  deliveredAt         DateTime?
+
+  @@index([status, createdAt])
+  @@index([clientId])
+  @@index([courierId])
+  @@map("commandes")
+}
