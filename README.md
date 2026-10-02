@@ -12,7 +12,7 @@ Application web de la startup **IPSSI Express Food** : chaque jour, 2 plats et 2
 | Lien | |
 |---|---|
 | Tableau Trello (répartition à faire / en cours / fait) | https://trello.com/b/tR9wZo7v/ipssi-express-food |
-| Support de présentation (résultats pour le manager) | **[LIEN GOOGLE SLIDES À AJOUTER]** |
+| Support de présentation (résultats pour le manager) | https://drive.google.com/file/d/1ug6SRYl92R9bLhFIBd7bysQTnKEEXcQN/view?usp=sharing |
 | Répartition détaillée des tâches et sprints | [docs/REPARTITION_DES_TACHES.md](docs/REPARTITION_DES_TACHES.md) |
 | Base de données, sécurité Atlas, RGPD | [docs/BASE_DE_DONNEES.md](docs/BASE_DE_DONNEES.md) |
 
