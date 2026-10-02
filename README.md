@@ -11,9 +11,8 @@ Application web de la startup **IPSSI Express Food** : chaque jour, 2 plats et 2
 
 | Lien | |
 |---|---|
-| Tableau Trello (répartition à faire / en cours / fait) | **[LIEN TRELLO À AJOUTER]** |
+| Tableau Trello (répartition à faire / en cours / fait) | https://trello.com/b/tR9wZo7v/ipssi-express-food |
 | Support de présentation (résultats pour le manager) | **[LIEN GOOGLE SLIDES À AJOUTER]** |
-| Application déployée | **[URL RENDER À AJOUTER]** |
 | Répartition détaillée des tâches et sprints | [docs/REPARTITION_DES_TACHES.md](docs/REPARTITION_DES_TACHES.md) |
 | Base de données, sécurité Atlas, RGPD | [docs/BASE_DE_DONNEES.md](docs/BASE_DE_DONNEES.md) |
 
@@ -114,9 +113,11 @@ En production, le serveur Express sert à la fois l'API (`/api/...`) et le front
 
 ## Déploiement
 
-### Render (recommandé, offre gratuite)
+Pour la soutenance, l'application est présentée **en local** (`npm run dev`), branchée sur la base MongoDB Atlas. Le code est néanmoins prêt à être déployé :
 
-Le fichier [`render.yaml`](render.yaml) décrit le service : *New → Blueprint* sur Render, choisir ce dépôt, puis renseigner `DATABASE_URL` (utilisateur applicatif Atlas). `JWT_SECRET` est généré automatiquement. Après le premier déploiement, lancer une fois `npm run db:push` depuis le *Shell* Render, et ajouter les IP sortantes de Render dans l'accès réseau Atlas.
+### Render
+
+Le fichier [`render.yaml`](render.yaml) décrit le service : *New → Blueprint* sur Render, choisir ce dépôt, puis renseigner `DATABASE_URL` (utilisateur applicatif Atlas). `JWT_SECRET` est généré automatiquement. Les collections sont créées depuis un poste de l'équipe avec `npm run db:push` (même base Atlas) ; il faut aussi ajouter les IP sortantes de Render dans l'accès réseau Atlas.
 
 ### Heroku
 
